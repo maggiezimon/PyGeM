@@ -2,10 +2,10 @@
 * [General info](#general-info)
 * [Technologies](#technologies)
 * [Setup](#setup)
-* [Setup on Scafell Pike](#setup-on-scafell-pike)
+* [Setup on cluster](#setup-on-a-cluster)
 
 ## General info
-Working space for Python scripts implementing the local order metric (LOM) for forward flux sampling (FFS). The algorithm enabling the measurement of order in the neighbourhood of an atomic or molecular site is described in [Martelli2018](https://journals.aps.org/prb/abstract/10.1103/PhysRevB.97.064105). The FFS is available in Python Suite for Advanced General Ensemble Simulations ([PySAGES](https://github.com/SSAGESLabs/PySAGES/tree/ffs)). PySAGES is an Python implementation of [SSAGES](https://ssagesproject.github.io/) with support for GPUs.
+Working space for Python scripts implementing a Geometry Matching (GeM) Local Order Metric (LOM) for forward flux sampling (FFS). The algorithm enabling the measurement of order in the neighbourhood of an atomic or molecular site is described in [Martelli2018](https://journals.aps.org/prb/abstract/10.1103/PhysRevB.97.064105). The FFS is available in Python Suite for Advanced General Ensemble Simulations ([PySAGES](https://github.com/SSAGESLabs/PySAGES/tree/ffs)). PySAGES is an Python implementation of [SSAGES](https://ssagesproject.github.io/) with support for GPUs.
 
 ## Technologies
 Project was created with:
@@ -33,7 +33,7 @@ or
 ```
 export CUDA_VISIBLE_DEVICES=$(nvidia-smi --query-gpu=memory.free,index --format=csv,nounits,noheader | sort -nr | head -1 | awk '{ print $NF }')
 ```
-This code was tested on MAC OS. In order to use it on a cluster with GPUs, an appropriate environment with CUDA and Jax should be setup. This is discussed in section  [Setup on Scafell Pike](#setup-on-scafell-pike).
+This code was tested on MAC OS. In order to use it on a cluster with GPUs, an appropriate environment with CUDA and Jax should be setup. This is discussed in section  [Setup on a cluster](#setup-on-a-cluster).
 
 Input parameters are specified in `params.ini`, together with files for reference sites, coordinates of simulated atoms, and simulation box specification in
 * `example/reference.txt`
@@ -51,18 +51,10 @@ python analyse_pygem.py 0 ./pygem.log
 ```
 will generate plots that demonstrate the score computation for atom 0.
 
-## Setup on Scafell Pike
-If you would like to use PySAGES on Scafell Pike, you should follow the instructions below. Among all of these steps, there are also some useful (arguably) suggestions regarding the management of conda environments. I hope you will enjoy this “smooth” read and try the installation yourself.
+## Setup on a cluster
+If you would like to use PySAGES on a cluster, you should follow the instructions below. Among all of these steps, there are also some useful (arguably) suggestions regarding the management of conda environments. I hope you will enjoy this “smooth” read and try the installation yourself.
 
-Let’s first start loading conda. I suggest using the following. Define a variable in your `bash_profile.sh`:
-```
-export SHARED_MODULES=/gpfs/fairthorpe/local/HCRI016/dre03/shared/modules
-```
-Now you can use it to load all the good stuff!
-```
-ml purge && ml use $SHARED_MODULES && ml use.scafellpike anaconda3
-```
-Specify in `.condarc` where you want all the environment files and packages be placed:
+Specify in `.condarc` where you want all the environment files and packages to be placed:
 ```
 pkgs_dirs:
  - $HCBASE/.conda/pkgs
@@ -76,13 +68,8 @@ Or type
 conda config --add pkgs_dirs $HCBASE/.conda/pkgs
 conda config --add envs_dirs $HCBASE/.conda/envs
 ```
-`$HCBASE` may be substituted for `/any/path/of/your/choice`, of course. In my case, it is `/lustre/scafellpike/local/HCRI016/dre03/mxz46-dre03/`. Avoid having anything saved in your `$HOME`; the divine powers of Hartree HPC allowed us to have in this directory only around 110M. Check how much space you actually have:
-```
-cd $HOME
-du -sh
-```
-If it is close to the limit, try removing some unnecessary files. In my case there is always something to clean in
-`./.cache/*`
+`$HCBASE` may be substituted for `/any/path/of/your/choice`, of course.
+
 No we can create our environment in which we define all the rules. Well, most of them.
 ```
 conda create --name pysages python=3.9
@@ -100,7 +87,7 @@ If you are satisfied, continue with the fun
 ```
 conda install -c conda-forge cudnn
 ```
-Even though the commands above are supposed to set-up CUDA tools for us, you still need load this (don’t ask why!)
+Even though the commands above are supposed to set-up CUDA tools for us, you still might need to load this (don’t ask why!)
 ```
 module load cuda/11.2
 ```
@@ -110,7 +97,6 @@ pip install jax[cuda11_cudnn82] -f https://storage.googleapis.com/jax-releases/j
 ```
 You can check the jax installation
 ```
-bsub -q scafellpikeGPU -W 1:00 -Is /bin/bash
 module load anaconda3
 conda activate pysages
 module load cuda
@@ -169,4 +155,3 @@ And then in `deactivate.d/env_vars.sh`:
 export LD_LIBRARY_PATH=${OLD_LD_LIBRARY_PATH}
 unset OLD_LD_LIBRARY_PATH
 ```
-`/your/path` in my case is `/lustre/scafellpike/local/HCRI016/dre03/mxz46-dre03/.conda/envs/pysages/lib`.
