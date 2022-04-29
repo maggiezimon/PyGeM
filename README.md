@@ -51,6 +51,21 @@ python analyse_pygem.py 0 ./pygem.log
 ```
 will generate plots that demonstrate the score computation for atom 0.
 
+In order to compute the compilation and execution time run the following:
+```
+cv = jit(gem(
+        np.array(positions),
+        reference_positions=reference_positions,
+        box=box))
+t = time.time()
+mean_score, all_results = cv(np.array(positions)).block_until_ready()
+print(f'Including just-in-time compilation {time.time()-t}')
+
+t = time.time()
+mean_score, all_results = cv(np.array(positions)).block_until_ready()
+print(f'Execution {time.time()-t}')
+```
+If we didn’t include the warm-up call separately, everything would still work, but then the compilation time would be included in the benchmark.(Note the use of `block_until_ready()`, which is required due to JAX’s Asynchronous execution model).
 ## Setup on a cluster
 If you would like to use PySAGES on a cluster, you should follow the instructions below. Among all of these steps, there are also some useful (arguably) suggestions regarding the management of conda environments. I hope you will enjoy this “smooth” read and try the installation yourself.
 
