@@ -21,11 +21,10 @@ All packages are listed in `pakage-list.txt`. This file may be used to create an
 ```
 $ conda create --name <env> --file <this file>
 ```
-To execute the code, run
+To use the code in PySAGES, add files contained in `collective_variables` to PySAGES:
 ```
-python pygem.py
+cp -rf collective_variables/* pysages/collective_variables/.
 ```
-The code saves all the results in a pickled file, `gem_results.pickle`. This option should be removed to speed up the execution.
 If the analysis is done on GPUs, specify the device before running the code:
 ```
 export CUDA_VISIBLE_DEVICES=0
@@ -34,39 +33,7 @@ or
 ```
 export CUDA_VISIBLE_DEVICES=$(nvidia-smi --query-gpu=memory.free,index --format=csv,nounits,noheader | sort -nr | head -1 | awk '{ print $NF }')
 ```
-This code was tested on MAC OS. In order to use it on a cluster with GPUs, an appropriate environment with CUDA and Jax should be setup. This is discussed in section  [Setup on a cluster](#setup-on-a-cluster).
 
-Input parameters are specified in `params.ini`, together with files for reference sites, coordinates of simulated atoms, and simulation box specification in
-* `example/reference.txt`
-* `example/positions.txt`
-* `example/simulation_box.txt`, respectively.
-
-### Testing
-To analyse the output file `gem_results.pickle` and visulise the optimisation process, execute
-```
-python analyse_pygem.py <atom-site-number> <path-to-log-file>
-```
-So, e.g.,
-```
-python analyse_pygem.py 0 ./pygem.log
-```
-will generate plots that demonstrate the score computation for atom 0.
-
-In order to compute the compilation and execution time run the following:
-```
-cv = jit(gem(
-        np.array(positions),
-        reference_positions=reference_positions,
-        box=box))
-t = time.time()
-mean_score, all_results = cv(np.array(positions)).block_until_ready()
-print(f'Including just-in-time compilation {time.time()-t}')
-
-t = time.time()
-mean_score, all_results = cv(np.array(positions)).block_until_ready()
-print(f'Execution {time.time()-t}')
-```
-If we didn’t include the warm-up call separately, everything would still work, but then the compilation time would be included in the benchmark.(Note the use of `block_until_ready()`, which is required due to JAX’s Asynchronous execution model).
 ## Setup on a cluster
 If you would like to use PySAGES on a cluster, you should follow the instructions below. Among all of these steps, there are also some useful (arguably) suggestions regarding the management of conda environments. I hope you will enjoy this “smooth” read and try the installation yourself.
 
@@ -140,10 +107,14 @@ Verify your installation by typing the following command:
 ```
 python -c "import openmm_dlext"
 ```
-And the final step!
+And the final step for PySAGES!
 ```
 git clone https://github.com/SSAGESLabs/PySAGES.git
 cd PySAGES && pip install .
+```
+For the PyGeM to work, you need to install jaxopt
+```
+pip install jaxopt
 ```
 ### Additional notes
 You can see your Conda environment in
