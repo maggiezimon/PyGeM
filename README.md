@@ -23,7 +23,7 @@ $ conda create --name <env> --file <this file>
 ```
 To use the code in PySAGES, add files contained in `collective_variables` to PySAGES:
 ```
-cp -rf collective_variables/* pysages/collective_variables/.
+cp -rf PyGeM/collective_variables/* pysages/collective_variables/.
 ```
 If the analysis is done on GPUs, specify the device before running the code:
 ```
@@ -33,7 +33,34 @@ or
 ```
 export CUDA_VISIBLE_DEVICES=$(nvidia-smi --query-gpu=memory.free,index --format=csv,nounits,noheader | sort -nr | head -1 | awk '{ print $NF }')
 ```
+### Testing
+To use PyGeM with PySAGES, load
+```
+from pysages.collective_variables import GeM
+```
+and specify the CV as per example (based on `forward_flux_sampling.py` in `PySAGES/examples/openmm`):
+```
+(...)
+simulation = generate_simulation()
+context = simulation.context.getState()
+box = context.getPeriodicBoxVectors(asNumpy=True)
 
+cvs = [
+        GeM(numpy.arange(0, 20, 1).tolist(),
+        reference_positions=[[16.806,26.736,17.939],
+                             [16.052,26.294,18.590],
+                             [15.108,26.836,18.523]],
+        box=box, group_length=20,
+        number_of_rotations=2,
+        number_of_opt_it=10,
+        min_cutoff=0.0001,
+        characteristic_distance=0.5,
+        standard_deviation=0.125,
+        mesh_size=20) ]
+method = FFS(cvs)
+
+```
+Values above were chosen randomly.
 ## Setup on a cluster
 If you would like to use PySAGES on a cluster, you should follow the instructions below. Among all of these steps, there are also some useful (arguably) suggestions regarding the management of conda environments. I hope you will enjoy this “smooth” read and try the installation yourself.
 
