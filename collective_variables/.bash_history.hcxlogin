@@ -1,0 +1,177 @@
+ml purge && ml use $SHARED_MODULES && ml use.scafellpike anaconda3 && ml cuda
+cdw
+ls
+cd pysages/
+ls
+cd PyGeMforPySAGES/
+ls
+vi pygem.py 
+bsub -q scafellpikeGPU -W 1:00 -Is /bin/bash
+rm -rf pygem_test.py 
+clear
+ls
+rm -rf core.28882
+clear
+ls
+cd ..
+ls
+cd PySAGES
+ls
+vi examples/ffs/ffs_openmm.py 
+cd ..
+ls
+rm -rf PySAGES_old/
+clear
+ls
+mv PySAGES/ PySAGES_old
+ls
+git clone https://github.com/SSAGESLabs/PySAGES.git
+clear
+ls
+cd Py
+cd PySAGES
+clear
+ls
+cd pysages/methods/
+l
+ls
+cd ..
+clear
+ls
+cd ..
+ls
+clear
+cd examples/
+ls
+cd openmm/
+ls
+vi forward_flux_sampling.py 
+clear
+cd ..
+clear
+ls
+pip install .
+which pip
+clear
+cd
+ls
+du -sh
+cd .
+ls
+du -sh
+du -s
+du 
+rm -rf ./.cache/pip/
+clear
+du -sh
+cdw
+clear
+ls
+cd pysages/
+ls
+conda activate pysages
+which pip
+cd PySAGES
+clear
+ls
+pip install .
+cd /lustre/scafellpike/local/HCRI016/dre03/mxz46-dre03/.conda/envs/pysages/lib/python3.9/site-packages
+clear
+ls
+cd pysages
+ls
+cd collective_variables/
+ls
+vi patterns.py 
+cd ..
+ls
+rm -rf pysages_old/
+ls  pysages-0.2.0.dist-info/
+mv pysages pysages_old
+ls
+cdw
+ls
+cd pysages/
+ls
+cd PySAGES
+pip install .
+cd /lustre/scafellpike/local/HCRI016/dre03/mxz46-dre03/.conda/envs/pysages/lib/python3.9/site-packages/pysages
+ls
+cd collective_variables/
+ls
+ml purge && ml use $SHARED_MODULES && ml use.scafellpike anaconda3 && ml cuda
+cdw
+clear
+ls
+cd pysages/
+clear
+ls
+cd PyGeMforPySAGES/
+ls
+clear
+ls
+cd ..
+ls
+cd PySAGES_old/
+ls
+clear
+ls
+cd examples/
+ls
+cd ffs/
+ls
+vi ffs_openmm.py 
+clear
+ls
+conda activate pysages
+python-m site
+python -m site
+cd /lustre/scafellpike/local/HCRI016/dre03/mxz46-dre03/.conda/envs/pysages/lib/python3.9/site-packages
+clear
+ls
+cd pysages
+clear
+ls
+cd collective_variables/
+clear
+ls
+vi core.py 
+vi __init__.py 
+cp -rf /lustre/scafellpike/local/HCRI016/dre03/mxz46-dre03/.conda/envs/pysages/lib/python3.9/site-packages/pysages_old/collective_variables/patterns.py .
+clear
+vi patterns.py 
+clear
+git clone https://github.com/maggiezimon/PyGeM.git
+ls
+cp -rf PyGeM/pygem.py patterns_test.py
+clear
+ls
+vi patterns.py 
+vi patterns_test.py 
+vi patterns.py 
+vi patterns_test.py 
+vi core.py 
+clear
+s
+ls
+vi patterns.py 
+rm -rf patterns.py 
+mv patterns_test.py patterns.py
+clear
+vi patterns.py 
+ls
+cp -rf PyGeM/params.ini .
+vi params.ini 
+cp -rf PyGeM/example/ .
+vi example/reference.txt 
+clear
+ls
+vi patterns.py 
+bqueues -u all -q scafellpikeGPU
+bqueues -u all
+bjobs -u all -q scafellPikeGPU
+bjobs -u all -q scafellpikeGPU
+bjobs -u all
+bjobs
+bjob -u all
+bjobs -u all
