@@ -10,9 +10,10 @@ Working space for Python scripts implementing a Geometry Matching (GeM) Local Or
 ## Technologies
 Project was created with:
 * python 3.9.7
-* jax 0.3.1
-* jaxlib 0.3.0
+* jax 0.3.9
+* jaxlib 0.3.7
 * jaxlie 1.2.10
+* jaxopt 0.3.1
 * numpy 1.22.2
 
 ## Setup

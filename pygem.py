@@ -1,6 +1,6 @@
 import jax
 from jax import jit, numpy as np
-from jax.scipy.optimize import minimize
+from jaxopt import GradientDescent as minimize
 from copy import deepcopy
 from numpy import loadtxt
 from configparser import ConfigParser
@@ -353,15 +353,16 @@ class Pattern():
             # d. Find the best rotation that aligns the settled sites
             # in both patterns;
             # Here, ‘optimal’ or ‘best’ is in terms of least squares errors
-            optim = minimize(
-                func_to_optimise,
-                np.array(
-                    [0.1, 0.0, 0.0, 0.1]),  # initial guess for quaternions
-                (reshuffled_reference, self._neighbour_coords),
-                method='BFGS', tol=1e-5,
-                options={'maxiter': number_of_opt_steps})
+            solver = minimize(
+                    fun=func_to_optimise,
+                    maxiter=number_of_opt_steps)
+            optim = solver.run(
+                    init_params=np.array([0.1, 0.0, 0.0, 0.1]),
+                    modified_pattern=reshuffled_reference,
+                    local_pattern=self._neighbour_coords
+                    )
             optimal_reference = rotate_pattern_with_quaternions(
-                    optim.x, reshuffled_reference)
+                    optim.params, reshuffled_reference)
             # e. Compute and store the score
             score = self.compute_score(optimal_reference)
             result = dict(
@@ -370,7 +371,7 @@ class Pattern():
                         random_indices=random_indices,
                         reshuffled_pattern=reshuffled_reference,
                         pattern=optimal_reference,
-                        quaternions=optim.x
+                        quaternions=optim.params
                         )
             return result
 
