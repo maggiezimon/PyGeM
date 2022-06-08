@@ -21,9 +21,9 @@ All packages are listed in `pakage-list.txt`. This file may be used to create an
 ```
 $ conda create --name <env> --file <this file>
 ```
-To use the code in PySAGES, add files contained in `collective_variables` to PySAGES:
+To use the code in PySAGES, add files contained in `colvars` to PySAGES:
 ```
-cp -rf PyGeM/collective_variables/* pysages/collective_variables/.
+cp -rf PyGeM/colvars/* pysages/colvars/.
 ```
 If the analysis is done on GPUs, specify the device before running the code:
 ```
@@ -36,7 +36,7 @@ export CUDA_VISIBLE_DEVICES=$(nvidia-smi --query-gpu=memory.free,index --format=
 ### Testing
 To use PyGeM with PySAGES, load
 ```
-from pysages.collective_variables import GeM
+from pysages.colvars import GeM
 ```
 and specify the CV as per example (based on `forward_flux_sampling.py` in `PySAGES/examples/openmm`):
 ```
@@ -57,7 +57,7 @@ cvs = [
         characteristic_distance=0.5,
         standard_deviation=0.125,
         mesh_size=20) ]
-method = FFS(cvs)
+method = FFS(cvs, grad=None)
 
 ```
 Values above were chosen randomly.
