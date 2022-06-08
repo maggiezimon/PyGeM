@@ -1,8 +1,8 @@
 import jax
 from jax import numpy as np
 from jaxopt import GradientDescent as minimize
-from copy import deepcopy
 from .core import PatternCV
+from pysages.utils import gaussian
 import time
 
 
@@ -165,7 +165,7 @@ class Pattern():
         mesh_size
                 ):
 
-        self.positions = deepcopy(positions)
+        self.positions = positions.copy()
         self.min_cutoff = min_cutoff
         self.characteristic_distance = characteristic_distance
         self.reference = reference
@@ -232,20 +232,22 @@ class Pattern():
                 self.positions[ids_of_neighbours])
 
     def compute_score(self, optim_reference):
-        return jax.lax.fori_loop(
-                0, len(self._neighbourhood),
-                lambda i, x: x*np.exp(
-                    -0.5*(
-                            (
-                                self._neighbour_coords[i] -
-                                optim_reference[i]
-                            ).dot(
-                                self._neighbour_coords[i] -
-                                optim_reference[i]
-                                ) /
-                            np.power(self.standard_deviation, 2)
-                        )),
-                1.0)
+        r = self._neighbour_coords - optim_reference
+        return np.prod(gaussian(1, self.standard_deviation, r))
+        # return jax.lax.fori_loop(
+        #         0, len(self._neighbourhood),
+        #         lambda i, x: x*np.exp(
+        #             -0.5*(
+        #                     (
+        #                         self._neighbour_coords[i] -
+        #                         optim_reference[i]
+        #                     ).dot(
+        #                         self._neighbour_coords[i] -
+        #                         optim_reference[i]
+        #                         ) /
+        #                     np.power(self.standard_deviation, 2)
+        #                 )),
+        #         1.0)
 
     def rotate_reference(self, random_euler_point):
         # Perform rotation of the reference pattern;
